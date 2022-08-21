@@ -1,0 +1,1 @@
+{"version":3,"file":"CompaniesMockService.js","sourceRoot":"","sources":["../../../src/services/CompaniesMockService.ts"],"names":[],"mappings":";;AAGA;IAAA;IASA,CAAC;IARG,yCAAU,GAAV,UAAW,MAAc;QACrB,IAAM,WAAW,GAAY;YACzB,IAAI,EAAE,mBAAmB;YACzB,MAAM,EAAE,MAAM;SACjB,CAAA;QACD,OAAO,WAAW,CAAC;IACvB,CAAC;IAEL,2BAAC;AAAD,CAAC,AATD,IASC"}

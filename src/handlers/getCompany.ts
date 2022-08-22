@@ -11,7 +11,7 @@ module.exports.main = async (event) => {
 
     const ticker: string = event.pathParameters?.ticker
     if (!ticker) 
-        return HandlersLib.handlerReponse(400, {
+        return HandlersLib.sendResponse(400, {
             message: `Company ticker is missing in path parameter. (i.e. /companies/goog)`
         })
     
@@ -19,14 +19,14 @@ module.exports.main = async (event) => {
         const company = _companiesController.getCompany(ticker);
 
         if (!company)
-            return HandlersLib.handlerReponse(404, {
+            return HandlersLib.sendResponse(404, {
                 message: `Company not found with ticker ${ticker}`
             })
         
-        return HandlersLib.handlerReponse(200, company)
+        return HandlersLib.sendResponse(200, company)
     }
     catch (e){
-        return HandlersLib.handlerReponse(500, {
+        return HandlersLib.sendResponse(500, {
             message: `Internal Server Error:`,
             error: e
         })

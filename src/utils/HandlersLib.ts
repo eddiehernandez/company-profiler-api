@@ -1,6 +1,6 @@
 export default class HandlersLib {
 
-    public static handlerReponse(statusCode: number, body: any): any {
+    public static sendResponse(statusCode: number, body: any): any {
         return {
             headers: { 'content-type': 'application/json'},
             statusCode: statusCode,

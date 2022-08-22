@@ -10,9 +10,7 @@ export default class CustomersController {
     }
 
     getCompany(ticker: string): Company | undefined {
-        const company: Company = this._companiesService.getCompany(ticker);
-        return company;
+        return this._companiesService.getCompany(ticker);
     }
-
 
 }

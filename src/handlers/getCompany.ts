@@ -11,7 +11,7 @@ module.exports.main = async (event) => {
 
     const ticker: string = event.pathParameters?.ticker
     if (!ticker) 
-        return HandlersLib.handlerReponse(404, {
+        return HandlersLib.handlerReponse(400, {
             message: `Company ticker is missing in path parameter. (i.e. /companies/goog)`
         })
     

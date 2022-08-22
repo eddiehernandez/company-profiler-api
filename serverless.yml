@@ -10,12 +10,6 @@ provider:
   deploymentMethod: direct
 
 functions:
-  getCustomer:
-    handler: src/handlers/getCustomer.main
-    events:
-      - httpApi:
-          path: /customers/{id}
-          method: get
   getCompany:
     handler: src/handlers/getCompany.main
     events:

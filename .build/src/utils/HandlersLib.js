@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var HandlersLib = /** @class */ (function () {
     function HandlersLib() {
     }
-    HandlersLib.handlerReponse = function (statusCode, body) {
+    HandlersLib.sendResponse = function (statusCode, body) {
         return {
             headers: { 'content-type': 'application/json' },
             statusCode: statusCode,

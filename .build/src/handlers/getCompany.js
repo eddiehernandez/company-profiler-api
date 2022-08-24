@@ -37,34 +37,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CompaniesController_1 = require("../controllers/CompaniesController");
-var CompaniesMockService_1 = require("../services/CompaniesMockService");
+var CompaniesFinnHubService_1 = require("../services/CompaniesFinnHubService");
 var HandlersLib_1 = require("../utils/HandlersLib");
-var _companiesService = new CompaniesMockService_1.default();
+// const _companiesService: ICompaniesService = new CompaniesMockService();
+var _companiesService = new CompaniesFinnHubService_1.default();
 var _companiesController = new CompaniesController_1.default(_companiesService);
 module.exports.main = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var ticker, company;
+    var ticker, company, e_1;
     var _a;
     return __generator(this, function (_b) {
-        ticker = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.ticker;
-        if (!ticker)
-            return [2 /*return*/, HandlersLib_1.default.handlerReponse(404, {
-                    message: "Company ticker is missing in path parameter. (i.e. /companies/goog)"
-                })];
-        try {
-            company = _companiesController.getCompany(ticker);
-            if (!company)
-                return [2 /*return*/, HandlersLib_1.default.handlerReponse(404, {
-                        message: "Company not found with ticker ".concat(ticker)
+        switch (_b.label) {
+            case 0:
+                ticker = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.ticker;
+                if (!ticker)
+                    return [2 /*return*/, HandlersLib_1.default.sendResponse(400, {
+                            message: "Company ticker is missing in path parameter. (i.e. /companies/goog)"
+                        })];
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, _companiesController.getCompany(ticker)];
+            case 2:
+                company = _b.sent();
+                if (!company)
+                    return [2 /*return*/, HandlersLib_1.default.sendResponse(404, {
+                            message: "Company not found with ticker ".concat(ticker)
+                        })];
+                return [2 /*return*/, HandlersLib_1.default.sendResponse(200, company)];
+            case 3:
+                e_1 = _b.sent();
+                return [2 /*return*/, HandlersLib_1.default.sendResponse(500, {
+                        message: "Internal Server Error:",
+                        error: e_1
                     })];
-            return [2 /*return*/, HandlersLib_1.default.handlerReponse(200, company)];
+            case 4: return [2 /*return*/];
         }
-        catch (e) {
-            return [2 /*return*/, HandlersLib_1.default.handlerReponse(500, {
-                    message: "Internal Server Error:",
-                    error: e
-                })];
-        }
-        return [2 /*return*/];
     });
 }); };
 //# sourceMappingURL=getCompany.js.map

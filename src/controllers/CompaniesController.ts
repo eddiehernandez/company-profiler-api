@@ -9,8 +9,8 @@ export default class CustomersController {
         this._companiesService = companiesService;
     }
 
-    getCompany(ticker: string): Company | undefined {
-        return this._companiesService.getCompany(ticker);
+    async getCompany(ticker: string): Promise<Company | undefined> {
+        return await this._companiesService.getCompany(ticker);
     }
 
 }

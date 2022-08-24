@@ -36,21 +36,44 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var CustomersController = /** @class */ (function () {
-    function CustomersController(companiesService) {
-        this._companiesService = companiesService;
+var axios_1 = require("axios");
+var CompaniesFinnHubService = /** @class */ (function () {
+    function CompaniesFinnHubService() {
+        this._apiKey = 'cbt802iad3i8shh4oq6g';
+        this._baseUrl = 'https://finnhub.io/api/v1/';
     }
-    CustomersController.prototype.getCompany = function (ticker) {
+    CompaniesFinnHubService.prototype.getCompany = function (ticker) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._companiesService.getCompany(ticker)];
-                    case 1: return [2 /*return*/, _a.sent()];
+            var company, url, _a, data, status, error_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        url = this._baseUrl + "stock/profile2?symbol=".concat(ticker, "&token=").concat(this._apiKey);
+                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 1:
+                        _a = _b.sent(), data = _a.data, status = _a.status;
+                        if (status != 200)
+                            throw data;
+                        console.log(data);
+                        if (!(data === null || data === void 0 ? void 0 : data.name))
+                            return [2 /*return*/, company]; // if no name is returned then not found, return undefined
+                        //TODO: create company director and builder
+                        company = {
+                            name: data === null || data === void 0 ? void 0 : data.name,
+                            ticker: data === null || data === void 0 ? void 0 : data.ticker
+                        };
+                        return [2 /*return*/, company];
+                    case 2:
+                        error_1 = _b.sent();
+                        console.log(error_1);
+                        throw new Error(error_1);
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    return CustomersController;
+    return CompaniesFinnHubService;
 }());
-exports.default = CustomersController;
-//# sourceMappingURL=CompaniesController.js.map
+exports.default = CompaniesFinnHubService;
+//# sourceMappingURL=CompaniesFinnHubService.js.map

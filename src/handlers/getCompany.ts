@@ -1,10 +1,12 @@
 "use strict";
 import CompaniesController from '../controllers/CompaniesController';
-import CompaniesMockService from '../services/CompaniesMockService';
+import CompaniesFinnHubService from '../services/CompaniesFinnHubService';
+// import CompaniesMockService from '../services/CompaniesMockService';
 import ICompaniesService from '../services/ICompaniesService';
 import HandlersLib from '../utils/HandlersLib';
 
-const _companiesService: ICompaniesService = new CompaniesMockService();
+// const _companiesService: ICompaniesService = new CompaniesMockService();
+const _companiesService: ICompaniesService = new CompaniesFinnHubService();
 const _companiesController: CompaniesController = new CompaniesController(_companiesService);
 
 module.exports.main = async (event) => {
@@ -16,7 +18,7 @@ module.exports.main = async (event) => {
         })
     
     try {
-        const company = _companiesController.getCompany(ticker);
+        const company = await _companiesController.getCompany(ticker);
 
         if (!company)
             return HandlersLib.sendResponse(404, {

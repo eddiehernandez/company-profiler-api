@@ -3,10 +3,12 @@ import ICompaniesService from "../../src/services/ICompaniesService";
 
 const companiesMockService : ICompaniesService = new CompaniesMockService();
 
-test ('CompaniesMockService getCompany valid ticker', () => {
-    expect(companiesMockService.getCompany('abc')?.name).toBe('ABC Company, Inc.');
+test ('CompaniesMockService getCompany valid ticker', async () => {
+    const company = await companiesMockService.getCompany('abc')
+    expect(company?.name).toBe('ABC Company, Inc.');
 })
 
-test ('CompaniesMockService getCompany return undefined', () => {
-    expect(companiesMockService.getCompany('dummyticker')).toBeUndefined()
+test ('CompaniesMockService getCompany return undefined', async () => {
+    const company = await companiesMockService.getCompany('test')
+    expect(company).toBeUndefined()
 })

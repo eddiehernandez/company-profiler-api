@@ -2,7 +2,7 @@ import Company from "../models/Company";
 import ICompaniesService from "./ICompaniesService";
 
 export default class CompaniesMockService implements ICompaniesService {
-    getCompany(ticker: string): Company | undefined {
+    async getCompany(ticker: string): Promise<Company | undefined> {
         let mockCompany: Company | undefined;
         if (ticker == 'abc')
             mockCompany = {

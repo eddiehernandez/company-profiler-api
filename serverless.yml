@@ -8,6 +8,25 @@ provider:
   region: us-east-2
   profile: eddie-personal
   deploymentMethod: direct
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+      - "s3:GetObject"
+      - "s3:PutObject"
+      Resource:
+        Fn::Join:
+        - ""
+        - - "arn:aws:s3:::"
+          - "Ref" : "company-profiler-cache"
+          - "/*"
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - "company-profiler-cache"
 
 functions:
   getCompany:
@@ -15,6 +34,12 @@ functions:
     events:
       - httpApi:
           path: /companies/{ticker}
+          method: get
+  getCompanies:
+    handler: src/handlers/getCompanies.main
+    events:
+      - httpApi:
+          path: /companies
           method: get
 plugins:
   - serverless-plugin-typescript

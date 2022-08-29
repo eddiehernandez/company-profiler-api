@@ -1,4 +1,5 @@
 import Company from "../models/Company";
+import CompanySearchResult from "../models/CompanySearchResult";
 import ICompaniesService from "./ICompaniesService";
 import axios from 'axios';
 
@@ -10,6 +11,29 @@ export default class CompaniesFinnHubService implements ICompaniesService {
     constructor (){
         this._apiKey = 'cbt802iad3i8shh4oq6g';
         this._baseUrl = 'https://finnhub.io/api/v1/';
+    }
+
+    async getCompanies(): Promise<CompanySearchResult[] | undefined> {
+        let companySearchResults: Array<CompanySearchResult> = [];
+
+        try {
+            let url = this._baseUrl + `stock/symbol?exchange=US&token=${this._apiKey}`;
+            const { data, status } = await axios.get<any>(url);
+
+            if (status != 200) throw data;
+            for (let c of data){
+                companySearchResults.push({
+                    name: c?.description,
+                    ticker: c?.displaySymbol
+                })
+            }
+
+            return companySearchResults;
+        }
+        catch (err){
+            console.log(err);
+            throw new Error(err);
+        }
     }
 
     async getCompany(ticker: string): Promise<Company | undefined> {

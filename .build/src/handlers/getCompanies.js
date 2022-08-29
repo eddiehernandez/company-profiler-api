@@ -36,31 +36,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var CustomersController = /** @class */ (function () {
-    function CustomersController(companiesService) {
-        this._companiesService = companiesService;
-    }
-    CustomersController.prototype.getCompany = function (ticker) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._companiesService.getCompany(ticker)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    CustomersController.prototype.getCompanies = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._companiesService.getCompanies()];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    return CustomersController;
-}());
-exports.default = CustomersController;
-//# sourceMappingURL=CompaniesController.js.map
+var CompaniesController_1 = require("../controllers/CompaniesController");
+var CompaniesFinnHubService_1 = require("../services/CompaniesFinnHubService");
+var HandlersLib_1 = require("../utils/HandlersLib");
+// const _companiesService: ICompaniesService = new CompaniesMockService();
+var _companiesService = new CompaniesFinnHubService_1.default();
+var _companiesController = new CompaniesController_1.default(_companiesService);
+module.exports.main = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+    var companiesList, e_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, _companiesController.getCompanies()];
+            case 1:
+                companiesList = _a.sent();
+                return [2 /*return*/, HandlersLib_1.default.sendResponse(200, companiesList)];
+            case 2:
+                e_1 = _a.sent();
+                return [2 /*return*/, HandlersLib_1.default.sendResponse(500, {
+                        message: "Internal Server Error:",
+                        error: e_1
+                    })];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+//# sourceMappingURL=getCompanies.js.map

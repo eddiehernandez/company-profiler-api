@@ -1,4 +1,4 @@
-export default interface Customer {
+export default interface Company {
     ticker: string;
     name: string;
 }

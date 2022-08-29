@@ -42,6 +42,39 @@ var CompaniesFinnHubService = /** @class */ (function () {
         this._apiKey = 'cbt802iad3i8shh4oq6g';
         this._baseUrl = 'https://finnhub.io/api/v1/';
     }
+    CompaniesFinnHubService.prototype.getCompanies = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var companySearchResults, url, _a, data, status, _i, data_1, c, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        companySearchResults = [];
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 3, , 4]);
+                        url = this._baseUrl + "stock/symbol?exchange=US&token=".concat(this._apiKey);
+                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 2:
+                        _a = _b.sent(), data = _a.data, status = _a.status;
+                        if (status != 200)
+                            throw data;
+                        for (_i = 0, data_1 = data; _i < data_1.length; _i++) {
+                            c = data_1[_i];
+                            companySearchResults.push({
+                                name: c === null || c === void 0 ? void 0 : c.description,
+                                ticker: c === null || c === void 0 ? void 0 : c.displaySymbol
+                            });
+                        }
+                        return [2 /*return*/, companySearchResults];
+                    case 3:
+                        err_1 = _b.sent();
+                        console.log(err_1);
+                        throw new Error(err_1);
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     CompaniesFinnHubService.prototype.getCompany = function (ticker) {
         return __awaiter(this, void 0, void 0, function () {
             var company, url, _a, data, status, error_1;

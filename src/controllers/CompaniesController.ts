@@ -1,4 +1,5 @@
 import Company from '../models/Company';
+import CompanySearchResult from '../models/CompanySearchResult';
 import ICompaniesService from '../services/ICompaniesService';
 
 export default class CustomersController {
@@ -11,6 +12,10 @@ export default class CustomersController {
 
     async getCompany(ticker: string): Promise<Company | undefined> {
         return await this._companiesService.getCompany(ticker);
+    }
+
+    async getCompanies(): Promise<CompanySearchResult[] | undefined> {
+        return await this._companiesService.getCompanies();
     }
 
 }

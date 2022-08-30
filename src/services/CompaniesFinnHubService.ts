@@ -2,6 +2,7 @@ import Company from "../models/Company";
 import CompanySearchResult from "../models/CompanySearchResult";
 import ICompaniesService from "./ICompaniesService";
 import axios from 'axios';
+import { S3 } from "aws-sdk";
 
 export default class CompaniesFinnHubService implements ICompaniesService {
 
@@ -16,24 +17,49 @@ export default class CompaniesFinnHubService implements ICompaniesService {
     async getCompanies(): Promise<CompanySearchResult[] | undefined> {
         let companySearchResults: Array<CompanySearchResult> = [];
 
+        const cacheBucket: string = 'company-profiler-cache';
+        const s3 = new S3();
+
         try {
-            let url = this._baseUrl + `stock/symbol?exchange=US&token=${this._apiKey}`;
-            const { data, status } = await axios.get<any>(url);
-
-            if (status != 200) throw data;
-            for (let c of data){
-                companySearchResults.push({
-                    name: c?.description,
-                    ticker: c?.displaySymbol
-                })
+            //see if company list is in cache
+            await s3.headObject({
+                Bucket: cacheBucket,
+                Key: 'testy.json'
+            }).promise();
+            console.log('cache file was found!');
+        }
+        catch (e) {
+            if (e.code == "NotFound" || e.code == "NoSuchKey"){
+                console.log('file not found!');
+                throw e;
             }
+            console.log('something else went wrong');
+            throw e;
+        }        
+companySearchResults.push({
+            name: 'testname',
+            ticker: 'testticker'
+        })
+        return companySearchResults;
 
-            return companySearchResults;
-        }
-        catch (err){
-            console.log(err);
-            throw new Error(err);
-        }
+        // try {
+        //     let url = this._baseUrl + `stock/symbol?exchange=US&token=${this._apiKey}`;
+        //     const { data, status } = await axios.get<any>(url);
+
+        //     if (status != 200) throw data;
+        //     for (let c of data){
+        //         companySearchResults.push({
+        //             name: c?.description,
+        //             ticker: c?.displaySymbol
+        //         })
+        //     }
+
+        //     return companySearchResults;
+        // }
+        // catch (err){
+        //     console.log(err);
+        //     throw new Error(err);
+        // }
     }
 
     async getCompany(ticker: string): Promise<Company | undefined> {

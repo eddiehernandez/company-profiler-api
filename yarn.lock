@@ -1315,7 +1315,7 @@
   "resolved" "https://registry.npmjs.org/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz"
   "version" "1.0.5"
 
-"aws-sdk@^2.1174.0", "aws-sdk@^2.1176.0", "aws-sdk@^2.1205.0":
+"aws-sdk@^2.1174.0", "aws-sdk@^2.1176.0":
   "integrity" "sha512-L/ndK2cwWfj1peFO1cMtXeey7rMrbE3bksiQjaa96TZi9C70qMYqhrBy4XKok1AC84dcTsHrEOjFTFWr8rvmdg=="
   "resolved" "https://registry.npmjs.org/aws-sdk/-/aws-sdk-2.1205.0.tgz"
   "version" "2.1205.0"

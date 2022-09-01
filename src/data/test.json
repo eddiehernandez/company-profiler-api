@@ -1,0 +1,26 @@
+[
+    {
+        "currency": "USD",
+        "description": "ATHENA TECHNOLOGY ACQ -CW23",
+        "displaySymbol": "ATEK.WS",
+        "figi": "BBG01410FCQ7",
+        "isin": null,
+        "mic": "XNYS",
+        "shareClassFIGI": "",
+        "symbol": "ATEK.WS",
+        "symbol2": "",
+        "type": "Equity WRT"
+    },
+    {
+        "currency": "USD",
+        "description": "ATOMOS LTD",
+        "displaySymbol": "AMOSF",
+        "figi": "BBG00P1M77J1",
+        "isin": null,
+        "mic": "OOTC",
+        "shareClassFIGI": "BBG00MS383N4",
+        "symbol": "AMOSF",
+        "symbol2": "",
+        "type": "Common Stock"
+    }  
+]

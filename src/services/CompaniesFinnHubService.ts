@@ -2,7 +2,8 @@ import Company from "../models/Company";
 import CompanySearchResult from "../models/CompanySearchResult";
 import ICompaniesService from "./ICompaniesService";
 import axios from 'axios';
-import { S3 } from "aws-sdk";
+import Cache from "../utils/Cache";
+
 
 export default class CompaniesFinnHubService implements ICompaniesService {
 
@@ -15,31 +16,8 @@ export default class CompaniesFinnHubService implements ICompaniesService {
     }
 
     async getCompanies(): Promise<CompanySearchResult[] | undefined> {
-        let companySearchResults: Array<CompanySearchResult> = [];
-
-        const cacheBucket: string = 'company-profiler-cache';
-        const s3 = new S3();
-
-        try {
-            //see if company list is in cache
-            await s3.headObject({
-                Bucket: cacheBucket,
-                Key: 'testy.json'
-            }).promise();
-            console.log('cache file was found!');
-        }
-        catch (e) {
-            if (e.code == "NotFound" || e.code == "NoSuchKey"){
-                console.log('file not found!');
-                throw e;
-            }
-            console.log('something else went wrong');
-            throw e;
-        }        
-companySearchResults.push({
-            name: 'testname',
-            ticker: 'testticker'
-        })
+        let companySearchResults: Array<CompanySearchResult> | undefined = [];
+        companySearchResults = await Cache.getList();
         return companySearchResults;
 
         // try {
@@ -77,7 +55,15 @@ companySearchResults.push({
             //TODO: create company director and builder
             company = {
                 name: data?.name,
-                ticker: data?.ticker
+                ticker: data?.ticker,
+                country: data?.country,
+                currency: data?.currency,
+                exchange: data?.exchange,
+                industry: data?.finnhubIndustry,
+                logo: data?.logo,
+                marketCapitalization: data?.marketCapitalization,
+                sharesOutstanding: data?.shareOutstanding,
+                website: data?.weburl
             }
   
             return company;

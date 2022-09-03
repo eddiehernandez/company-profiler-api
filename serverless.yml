@@ -35,12 +35,14 @@ functions:
       - httpApi:
           path: /companies/{ticker}
           method: get
+          cors: true
   getCompanies:
     handler: src/handlers/getCompanies.main
     events:
       - httpApi:
           path: /companies
           method: get
+          cors: true
 plugins:
   - serverless-plugin-typescript
   - serverless-offline

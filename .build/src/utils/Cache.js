@@ -49,6 +49,7 @@ var Cache = /** @class */ (function () {
                     return [2 /*return*/];
                 companySearchResults = [];
                 importedCompanies = companies;
+                importedCompanies = importedCompanies.filter(function (c) { return (c.mic !== 'OOTC'); }); // filter out over the counter symbols
                 for (_i = 0, importedCompanies_1 = importedCompanies; _i < importedCompanies_1.length; _i++) {
                     c = importedCompanies_1[_i];
                     companySearchResults.push({
@@ -57,6 +58,7 @@ var Cache = /** @class */ (function () {
                     });
                 }
                 companySearchResults.sort(function (x, y) { return x.ticker < y.ticker ? -1 : 1; });
+                console.log(companySearchResults.length);
                 return [2 /*return*/, companySearchResults];
             });
         });

@@ -1,3 +1,5 @@
+import CompanyNews from "./CompanyNews";
+
 export default interface Company {
     ticker: string;
     name: string;
@@ -9,4 +11,5 @@ export default interface Company {
     marketCapitalization?: string;
     sharesOutstanding?: string;
     website?: string;
+    companyNews?: CompanyNews[];
 }

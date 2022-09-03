@@ -2,7 +2,11 @@ export default class HandlersLib {
 
     public static sendResponse(statusCode: number, body: any): any {
         return {
-            headers: { 'content-type': 'application/json'},
+            headers: {                 	
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true,
+                'content-type': 'application/json'
+            },
             statusCode: statusCode,
             body: JSON.stringify(body)
         }

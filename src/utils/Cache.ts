@@ -9,7 +9,7 @@ export default class Cache {
 
         let companySearchResults: CompanySearchResult[] = [];
         let importedCompanies: Array<any> = <any[]> companies; //cast to an array
-
+        importedCompanies = importedCompanies.filter(c => {return (c.mic !== 'OOTC')}) // filter out over the counter symbols
         for (let c of importedCompanies){
             companySearchResults.push({
                 name: c?.description,
@@ -17,6 +17,7 @@ export default class Cache {
             })
         }
         companySearchResults.sort((x: CompanySearchResult, y: CompanySearchResult) => { return x.ticker < y.ticker ? -1: 1; })
+        console.log(companySearchResults.length);
         return companySearchResults;
     }
 

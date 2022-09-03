@@ -41,7 +41,10 @@ var Cache_1 = require("../utils/Cache");
 var CompaniesFinnHubService = /** @class */ (function () {
     function CompaniesFinnHubService() {
         this._apiKey = 'cbt802iad3i8shh4oq6g';
-        this._baseUrl = 'https://finnhub.io/api/v1/';
+        this._baseUrl = 'https://finnhub.io/api/v1';
+        this._companyProfileUrl = this._baseUrl + '/stock/profile2';
+        this._companyNewsUrl = this._baseUrl + '/company-news';
+        this._newsArticleLimit = 10;
     }
     CompaniesFinnHubService.prototype.getCompanies = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -60,39 +63,70 @@ var CompaniesFinnHubService = /** @class */ (function () {
     };
     CompaniesFinnHubService.prototype.getCompany = function (ticker) {
         return __awaiter(this, void 0, void 0, function () {
-            var company, url, _a, data, status, error_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var company, url, _a, profile, status, d, toDate, fromDate, _b, news, newsStatus, _i, news_1, article, error_1;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        url = this._baseUrl + "stock/profile2?symbol=".concat(ticker, "&token=").concat(this._apiKey);
+                        _c.trys.push([0, 3, , 4]);
+                        url = this._companyProfileUrl + "?symbol=".concat(ticker, "&token=").concat(this._apiKey);
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 1:
-                        _a = _b.sent(), data = _a.data, status = _a.status;
+                        _a = _c.sent(), profile = _a.data, status = _a.status;
                         if (status != 200)
-                            throw data;
-                        console.log(data);
-                        if (!(data === null || data === void 0 ? void 0 : data.name))
+                            throw profile;
+                        // console.log(profile);
+                        if (!(profile === null || profile === void 0 ? void 0 : profile.name))
                             return [2 /*return*/, company]; // if no name is returned then not found, return undefined
+                        d = new Date();
+                        toDate = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+                        d.setMonth(d.getMonth() - 1);
+                        fromDate = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+                        url = this._companyNewsUrl + "?symbol=".concat(ticker, "&from=").concat(fromDate, "&to=").concat(toDate, "&token=").concat(this._apiKey);
+                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 2:
+                        _b = _c.sent(), news = _b.data, newsStatus = _b.status;
+                        if (newsStatus != 200)
+                            throw news;
+                        // console.log(news); 
                         //TODO: create company director and builder
                         company = {
-                            name: data === null || data === void 0 ? void 0 : data.name,
-                            ticker: data === null || data === void 0 ? void 0 : data.ticker,
-                            country: data === null || data === void 0 ? void 0 : data.country,
-                            currency: data === null || data === void 0 ? void 0 : data.currency,
-                            exchange: data === null || data === void 0 ? void 0 : data.exchange,
-                            industry: data === null || data === void 0 ? void 0 : data.finnhubIndustry,
-                            logo: data === null || data === void 0 ? void 0 : data.logo,
-                            marketCapitalization: data === null || data === void 0 ? void 0 : data.marketCapitalization,
-                            sharesOutstanding: data === null || data === void 0 ? void 0 : data.shareOutstanding,
-                            website: data === null || data === void 0 ? void 0 : data.weburl
+                            name: profile === null || profile === void 0 ? void 0 : profile.name,
+                            ticker: profile === null || profile === void 0 ? void 0 : profile.ticker,
+                            country: profile === null || profile === void 0 ? void 0 : profile.country,
+                            currency: profile === null || profile === void 0 ? void 0 : profile.currency,
+                            exchange: profile === null || profile === void 0 ? void 0 : profile.exchange,
+                            industry: profile === null || profile === void 0 ? void 0 : profile.finnhubIndustry,
+                            logo: profile === null || profile === void 0 ? void 0 : profile.logo,
+                            marketCapitalization: profile === null || profile === void 0 ? void 0 : profile.marketCapitalization,
+                            sharesOutstanding: profile === null || profile === void 0 ? void 0 : profile.shareOutstanding,
+                            website: profile === null || profile === void 0 ? void 0 : profile.weburl
                         };
+                        if (news) {
+                            company.companyNews = [];
+                            console.log("orig news count ".concat(news.length));
+                            if (news.length > 0)
+                                news = news.slice(0, this._newsArticleLimit); //limit numbers of articles returned
+                            console.log("post news count ".concat(news.length));
+                            for (_i = 0, news_1 = news; _i < news_1.length; _i++) {
+                                article = news_1[_i];
+                                company.companyNews.push({
+                                    datetime: new Date((article === null || article === void 0 ? void 0 : article.datetime) * 1000).toDateString(),
+                                    headline: article === null || article === void 0 ? void 0 : article.headline,
+                                    id: article === null || article === void 0 ? void 0 : article.id,
+                                    image: article === null || article === void 0 ? void 0 : article.image,
+                                    related: article === null || article === void 0 ? void 0 : article.related,
+                                    summary: article === null || article === void 0 ? void 0 : article.summary,
+                                    url: article === null || article === void 0 ? void 0 : article.url,
+                                    source: article === null || article === void 0 ? void 0 : article.source
+                                });
+                            }
+                        }
                         return [2 /*return*/, company];
-                    case 2:
-                        error_1 = _b.sent();
+                    case 3:
+                        error_1 = _c.sent();
                         console.log(error_1);
                         throw new Error(error_1);
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

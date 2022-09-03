@@ -5,7 +5,11 @@ var HandlersLib = /** @class */ (function () {
     }
     HandlersLib.sendResponse = function (statusCode, body) {
         return {
-            headers: { 'content-type': 'application/json' },
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true,
+                'content-type': 'application/json'
+            },
             statusCode: statusCode,
             body: JSON.stringify(body)
         };

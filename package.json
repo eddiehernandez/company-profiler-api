@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "main": "handler.ts",
   "scripts": {
-    "local-getCustomer": "serverless invoke local -f getCustomer",
-    "remote-getCustomer": "serverless invoke -f getCustomer",
     "local-getCompany": "serverless invoke local -f getCompany",
     "remote-getCompany": "serverless invoke -f getCompany",
     "local-api": "serverless offline start --printOutput",

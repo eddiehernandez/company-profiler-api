@@ -1,5 +1,6 @@
 service: company-profiler-api
 frameworkVersion: '3'
+useDotenv: true
 
 provider:
   name: aws
@@ -9,7 +10,9 @@ provider:
   profile: eddie-personal
   deploymentMethod: direct
   httpApi:
-    cors: true
+    cors: true	
+  environment:
+    FINNHUB_API_KEY: ${env:FINNHUB_API_KEY}
 
 functions:
   getCompany:

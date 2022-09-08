@@ -11,13 +11,16 @@ export default class CompaniesFinnHubService implements ICompaniesService {
     private _baseUrl: string;
     private _companyProfileUrl: string;
     private _companyNewsUrl: string;
+    private _companyStatsUrl: string;
     private _newsArticleLimit: number;
 
     constructor (){
-        this._apiKey = 'cbt802iad3i8shh4oq6g';
+        if (!process.env.FINNHUB_API_KEY) throw 'Finnhub API Key env variable not specified!';
+        this._apiKey = <string> process.env.FINNHUB_API_KEY;
         this._baseUrl = 'https://finnhub.io/api/v1';
         this._companyProfileUrl = this._baseUrl + '/stock/profile2';
         this._companyNewsUrl = this._baseUrl + '/company-news';
+        this._companyStatsUrl = this._baseUrl + '/stock/metric';
         this._newsArticleLimit = 10;
     }
 
@@ -54,9 +57,7 @@ export default class CompaniesFinnHubService implements ICompaniesService {
             //Get Profile
             let url = this._companyProfileUrl + `?symbol=${ticker}&token=${this._apiKey}`;
             const { data: profile, status } = await axios.get<any>(url);
-
             if (status != 200) throw profile;
-            // console.log(profile);
             if (!profile?.name) return company; // if no name is returned then not found, return undefined
 
             //Get Company News
@@ -64,14 +65,16 @@ export default class CompaniesFinnHubService implements ICompaniesService {
             const toDate: string = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
             d.setMonth(d.getMonth() - 1);
             const fromDate: string = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
-
             url = this._companyNewsUrl + `?symbol=${ticker}&from=${fromDate}&to=${toDate}&token=${this._apiKey}`;
-            // console.log(`news url = ${url}`);
             let { data: news, status: newsStatus } = await axios.get<any>(url);
             if (newsStatus != 200) throw news;
-            // console.log(news); 
-
-
+            
+            //Get Company Statistics
+            url = this._companyStatsUrl + `?symbol=${ticker}&metric=all&token=${this._apiKey}`;
+            const { data: stats, status: statsStatus } = await axios.get<any>(url);
+            if (statsStatus != 200) throw stats;
+            console.log('stats found = ');
+            console.log(stats);
 
             //TODO: create company director and builder
             company = {
@@ -84,14 +87,27 @@ export default class CompaniesFinnHubService implements ICompaniesService {
                 logo: profile?.logo,
                 marketCapitalization: profile?.marketCapitalization,
                 sharesOutstanding: profile?.shareOutstanding,
-                website: profile?.weburl
+                website: profile?.weburl,
+                companyStats : {
+                    revenueGrowthOneYearTTM: stats?.metric?.revenueGrowthTTMYoy,
+                    revenueGrowthThreeYear: stats?.metric?.revenueGrowth3Y,
+                    revenueGrowthFiveYear: stats?.metric?.revenueGrowth5Y,
+                    quickRatioQuarterly: stats?.series?.quarterly?.quickRatio[0]?.v,
+                    quickRatioQuarterlyPeriod: stats?.series?.quarterly?.quickRatio[0]?.period,                    
+                    currentRatioQuarterly: stats?.series?.quarterly?.currentRatio[0]?.v,
+                    currentRatioQuarterlyPeriod: stats?.series?.quarterly?.currentRatio[0]?.period,
+                    longTermDebtToEquityQuarterly: stats?.series?.quarterly?.longtermDebtTotalEquity[0]?.v,
+                    longTermDebtToEquityQuarterlyPeriod: stats?.series?.quarterly?.longtermDebtTotalEquity[0]?.period,
+                    totalDebtToEquityQuarterly: stats?.series?.quarterly?.totalDebtToEquity[0]?.v,
+                    totalDebtToEquityQuarterlyPeriod: stats?.series?.quarterly?.totalDebtToEquity[0]?.period
+                }
             }
+
             if (news){
                 company.companyNews = [];
                 console.log(`orig news count ${news.length}`);
                 if (news.length > 0)
                     news = news.slice(0,this._newsArticleLimit); //limit numbers of articles returned
-                    console.log(`post news count ${news.length}`);
 
                 for (let article of news){
                     company.companyNews.push({                        

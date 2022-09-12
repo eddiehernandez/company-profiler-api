@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
 var Cache_1 = require("../utils/Cache");
+var moment = require("moment");
 var CompaniesFinnHubService = /** @class */ (function () {
     function CompaniesFinnHubService() {
         if (!process.env.FINNHUB_API_KEY)
@@ -47,35 +48,60 @@ var CompaniesFinnHubService = /** @class */ (function () {
         this._companyProfileUrl = this._baseUrl + '/stock/profile2';
         this._companyNewsUrl = this._baseUrl + '/company-news';
         this._companyStatsUrl = this._baseUrl + '/stock/metric';
+        this._companyQuoteUrl = this._baseUrl + '/quote';
         this._newsArticleLimit = 10;
     }
     CompaniesFinnHubService.prototype.getCompanies = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var companySearchResults;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var companySearchResults, url, _a, data, status, _i, data_1, c, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         companySearchResults = [];
                         return [4 /*yield*/, Cache_1.default.getList()];
                     case 1:
-                        companySearchResults = _a.sent();
+                        companySearchResults = _b.sent();
+                        if (companySearchResults)
+                            return [2 /*return*/, companySearchResults];
+                        _b.label = 2;
+                    case 2:
+                        _b.trys.push([2, 4, , 5]);
+                        companySearchResults = []; //reinitialize
+                        url = this._baseUrl + "stock/symbol?exchange=US&token=".concat(this._apiKey);
+                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 3:
+                        _a = _b.sent(), data = _a.data, status = _a.status;
+                        if (status != 200)
+                            throw data;
+                        for (_i = 0, data_1 = data; _i < data_1.length; _i++) {
+                            c = data_1[_i];
+                            companySearchResults.push({
+                                name: c === null || c === void 0 ? void 0 : c.description,
+                                ticker: c === null || c === void 0 ? void 0 : c.displaySymbol
+                            });
+                        }
                         return [2 /*return*/, companySearchResults];
+                    case 4:
+                        err_1 = _b.sent();
+                        console.log(err_1);
+                        throw new Error(err_1);
+                    case 5: return [2 /*return*/];
                 }
             });
         });
     };
     CompaniesFinnHubService.prototype.getCompany = function (ticker) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13;
         return __awaiter(this, void 0, void 0, function () {
-            var company, url, _3, profile, status, d, toDate, fromDate, _4, news, newsStatus, _5, stats, statsStatus, _i, news_1, article, error_1;
-            return __generator(this, function (_6) {
-                switch (_6.label) {
+            var company, url, _14, profile, status, d, toDate, fromDate, _15, news, newsStatus, _16, stats, statsStatus, _17, quote, quoteStatus, _i, news_1, article, error_1;
+            return __generator(this, function (_18) {
+                switch (_18.label) {
                     case 0:
-                        _6.trys.push([0, 4, , 5]);
+                        _18.trys.push([0, 5, , 6]);
                         url = this._companyProfileUrl + "?symbol=".concat(ticker, "&token=").concat(this._apiKey);
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 1:
-                        _3 = _6.sent(), profile = _3.data, status = _3.status;
+                        _14 = _18.sent(), profile = _14.data, status = _14.status;
                         if (status != 200)
                             throw profile;
                         if (!(profile === null || profile === void 0 ? void 0 : profile.name))
@@ -87,18 +113,24 @@ var CompaniesFinnHubService = /** @class */ (function () {
                         url = this._companyNewsUrl + "?symbol=".concat(ticker, "&from=").concat(fromDate, "&to=").concat(toDate, "&token=").concat(this._apiKey);
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 2:
-                        _4 = _6.sent(), news = _4.data, newsStatus = _4.status;
+                        _15 = _18.sent(), news = _15.data, newsStatus = _15.status;
                         if (newsStatus != 200)
                             throw news;
                         //Get Company Statistics
                         url = this._companyStatsUrl + "?symbol=".concat(ticker, "&metric=all&token=").concat(this._apiKey);
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 3:
-                        _5 = _6.sent(), stats = _5.data, statsStatus = _5.status;
+                        _16 = _18.sent(), stats = _16.data, statsStatus = _16.status;
                         if (statsStatus != 200)
                             throw stats;
-                        console.log('stats found = ');
-                        console.log(stats);
+                        //Get Company Quote
+                        url = this._companyQuoteUrl + "?symbol=".concat(ticker, "&token=").concat(this._apiKey);
+                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 4:
+                        _17 = _18.sent(), quote = _17.data, quoteStatus = _17.status;
+                        if (quoteStatus != 200)
+                            throw quote;
+                        console.log(quote);
                         //TODO: create company director and builder
                         company = {
                             name: profile === null || profile === void 0 ? void 0 : profile.name,
@@ -111,6 +143,8 @@ var CompaniesFinnHubService = /** @class */ (function () {
                             marketCapitalization: profile === null || profile === void 0 ? void 0 : profile.marketCapitalization,
                             sharesOutstanding: profile === null || profile === void 0 ? void 0 : profile.shareOutstanding,
                             website: profile === null || profile === void 0 ? void 0 : profile.weburl,
+                            stockPrice: quote === null || quote === void 0 ? void 0 : quote.c,
+                            stockPriceAsOfDateTime: moment().format('MM/DD/YYYY h:mm a'),
                             companyStats: {
                                 revenueGrowthOneYearTTM: (_a = stats === null || stats === void 0 ? void 0 : stats.metric) === null || _a === void 0 ? void 0 : _a.revenueGrowthTTMYoy,
                                 revenueGrowthThreeYear: (_b = stats === null || stats === void 0 ? void 0 : stats.metric) === null || _b === void 0 ? void 0 : _b.revenueGrowth3Y,
@@ -122,7 +156,16 @@ var CompaniesFinnHubService = /** @class */ (function () {
                                 longTermDebtToEquityQuarterly: (_t = (_s = (_r = stats === null || stats === void 0 ? void 0 : stats.series) === null || _r === void 0 ? void 0 : _r.quarterly) === null || _s === void 0 ? void 0 : _s.longtermDebtTotalEquity[0]) === null || _t === void 0 ? void 0 : _t.v,
                                 longTermDebtToEquityQuarterlyPeriod: (_w = (_v = (_u = stats === null || stats === void 0 ? void 0 : stats.series) === null || _u === void 0 ? void 0 : _u.quarterly) === null || _v === void 0 ? void 0 : _v.longtermDebtTotalEquity[0]) === null || _w === void 0 ? void 0 : _w.period,
                                 totalDebtToEquityQuarterly: (_z = (_y = (_x = stats === null || stats === void 0 ? void 0 : stats.series) === null || _x === void 0 ? void 0 : _x.quarterly) === null || _y === void 0 ? void 0 : _y.totalDebtToEquity[0]) === null || _z === void 0 ? void 0 : _z.v,
-                                totalDebtToEquityQuarterlyPeriod: (_2 = (_1 = (_0 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _0 === void 0 ? void 0 : _0.quarterly) === null || _1 === void 0 ? void 0 : _1.totalDebtToEquity[0]) === null || _2 === void 0 ? void 0 : _2.period
+                                totalDebtToEquityQuarterlyPeriod: (_2 = (_1 = (_0 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _0 === void 0 ? void 0 : _0.quarterly) === null || _1 === void 0 ? void 0 : _1.totalDebtToEquity[0]) === null || _2 === void 0 ? void 0 : _2.period,
+                                freeCashFlowTTM: (_3 = stats === null || stats === void 0 ? void 0 : stats.metric) === null || _3 === void 0 ? void 0 : _3.freeCashFlowTTM,
+                                freeCashFlowPerShareTTM: stats === null || stats === void 0 ? void 0 : stats.metric.freeCashFlowPerShareTTM,
+                                dividendYieldTTM: stats === null || stats === void 0 ? void 0 : stats.metric.currentDividendYieldTTM,
+                                dividendGrowthRate5Y: stats === null || stats === void 0 ? void 0 : stats.metric.dividendGrowthRate5Y,
+                                payoutRatioTTM: stats === null || stats === void 0 ? void 0 : stats.metric.payoutRatioTTM,
+                                roicTTM: (_6 = (_5 = (_4 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _4 === void 0 ? void 0 : _4.quarterly) === null || _5 === void 0 ? void 0 : _5.roicTTM[0]) === null || _6 === void 0 ? void 0 : _6.v,
+                                roicTTMPeriod: (_9 = (_8 = (_7 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _7 === void 0 ? void 0 : _7.quarterly) === null || _8 === void 0 ? void 0 : _8.roicTTM[0]) === null || _9 === void 0 ? void 0 : _9.period,
+                                roeTTM: (_11 = (_10 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _10 === void 0 ? void 0 : _10.quarterly) === null || _11 === void 0 ? void 0 : _11.roeTTM[0].v,
+                                roeTTMPeriod: (_13 = (_12 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _12 === void 0 ? void 0 : _12.quarterly) === null || _13 === void 0 ? void 0 : _13.roeTTM[0].period
                             }
                         };
                         if (news) {
@@ -145,11 +188,11 @@ var CompaniesFinnHubService = /** @class */ (function () {
                             }
                         }
                         return [2 /*return*/, company];
-                    case 4:
-                        error_1 = _6.sent();
+                    case 5:
+                        error_1 = _18.sent();
                         console.log(error_1);
                         throw new Error(error_1);
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });

@@ -12,6 +12,8 @@ export default interface Company {
     marketCapitalization?: string;
     sharesOutstanding?: string;
     website?: string;
+    stockPrice?: string;
+    stockPriceAsOfDateTime?: string;
     companyStats?: CompanyStats;
     companyNews?: CompanyNews[];
 }

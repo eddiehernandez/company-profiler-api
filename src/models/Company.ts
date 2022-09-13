@@ -1,5 +1,6 @@
 import CompanyNews from "./CompanyNews";
 import CompanyStats from "./CompanyStats";
+import TimeSeries from "./TimeSeries";
 
 export default interface Company {
     ticker: string;
@@ -15,5 +16,6 @@ export default interface Company {
     stockPrice?: string;
     stockPriceAsOfDateTime?: string;
     companyStats?: CompanyStats;
+    timeSeries?: TimeSeries;
     companyNews?: CompanyNews[];
 }

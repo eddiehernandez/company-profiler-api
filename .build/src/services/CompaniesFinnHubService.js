@@ -38,7 +38,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
 var Cache_1 = require("../utils/Cache");
-var moment = require("moment");
+// import { moveSyntheticComments } from "typescript";
+// import * as moment from 'moment';
+var CompanyDirector_1 = require("../utils/builders/CompanyDirector");
 var CompaniesFinnHubService = /** @class */ (function () {
     function CompaniesFinnHubService() {
         if (!process.env.FINNHUB_API_KEY)
@@ -91,17 +93,16 @@ var CompaniesFinnHubService = /** @class */ (function () {
         });
     };
     CompaniesFinnHubService.prototype.getCompany = function (ticker) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13;
         return __awaiter(this, void 0, void 0, function () {
-            var company, url, _14, profile, status, d, toDate, fromDate, _15, news, newsStatus, _16, stats, statsStatus, _17, quote, quoteStatus, _i, news_1, article, error_1;
-            return __generator(this, function (_18) {
-                switch (_18.label) {
+            var company, url, _a, profile, status, d, toDate, fromDate, _b, news, newsStatus, _c, stats, statsStatus, _d, quote, quoteStatus, error_1;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
-                        _18.trys.push([0, 5, , 6]);
+                        _e.trys.push([0, 5, , 6]);
                         url = this._companyProfileUrl + "?symbol=".concat(ticker, "&token=").concat(this._apiKey);
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 1:
-                        _14 = _18.sent(), profile = _14.data, status = _14.status;
+                        _a = _e.sent(), profile = _a.data, status = _a.status;
                         if (status != 200)
                             throw profile;
                         if (!(profile === null || profile === void 0 ? void 0 : profile.name))
@@ -113,83 +114,95 @@ var CompaniesFinnHubService = /** @class */ (function () {
                         url = this._companyNewsUrl + "?symbol=".concat(ticker, "&from=").concat(fromDate, "&to=").concat(toDate, "&token=").concat(this._apiKey);
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 2:
-                        _15 = _18.sent(), news = _15.data, newsStatus = _15.status;
+                        _b = _e.sent(), news = _b.data, newsStatus = _b.status;
                         if (newsStatus != 200)
                             throw news;
                         //Get Company Statistics
                         url = this._companyStatsUrl + "?symbol=".concat(ticker, "&metric=all&token=").concat(this._apiKey);
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 3:
-                        _16 = _18.sent(), stats = _16.data, statsStatus = _16.status;
+                        _c = _e.sent(), stats = _c.data, statsStatus = _c.status;
                         if (statsStatus != 200)
                             throw stats;
                         //Get Company Quote
                         url = this._companyQuoteUrl + "?symbol=".concat(ticker, "&token=").concat(this._apiKey);
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 4:
-                        _17 = _18.sent(), quote = _17.data, quoteStatus = _17.status;
+                        _d = _e.sent(), quote = _d.data, quoteStatus = _d.status;
                         if (quoteStatus != 200)
                             throw quote;
                         console.log(quote);
+                        company = CompanyDirector_1.default.build(profile, quote, stats, news);
                         //TODO: create company director and builder
-                        company = {
-                            name: profile === null || profile === void 0 ? void 0 : profile.name,
-                            ticker: profile === null || profile === void 0 ? void 0 : profile.ticker,
-                            country: profile === null || profile === void 0 ? void 0 : profile.country,
-                            currency: profile === null || profile === void 0 ? void 0 : profile.currency,
-                            exchange: profile === null || profile === void 0 ? void 0 : profile.exchange,
-                            industry: profile === null || profile === void 0 ? void 0 : profile.finnhubIndustry,
-                            logo: profile === null || profile === void 0 ? void 0 : profile.logo,
-                            marketCapitalization: profile === null || profile === void 0 ? void 0 : profile.marketCapitalization,
-                            sharesOutstanding: profile === null || profile === void 0 ? void 0 : profile.shareOutstanding,
-                            website: profile === null || profile === void 0 ? void 0 : profile.weburl,
-                            stockPrice: quote === null || quote === void 0 ? void 0 : quote.c,
-                            stockPriceAsOfDateTime: moment().format('MM/DD/YYYY h:mm a'),
-                            companyStats: {
-                                revenueGrowthOneYearTTM: (_a = stats === null || stats === void 0 ? void 0 : stats.metric) === null || _a === void 0 ? void 0 : _a.revenueGrowthTTMYoy,
-                                revenueGrowthThreeYear: (_b = stats === null || stats === void 0 ? void 0 : stats.metric) === null || _b === void 0 ? void 0 : _b.revenueGrowth3Y,
-                                revenueGrowthFiveYear: (_c = stats === null || stats === void 0 ? void 0 : stats.metric) === null || _c === void 0 ? void 0 : _c.revenueGrowth5Y,
-                                quickRatioQuarterly: (_f = (_e = (_d = stats === null || stats === void 0 ? void 0 : stats.series) === null || _d === void 0 ? void 0 : _d.quarterly) === null || _e === void 0 ? void 0 : _e.quickRatio[0]) === null || _f === void 0 ? void 0 : _f.v,
-                                quickRatioQuarterlyPeriod: (_j = (_h = (_g = stats === null || stats === void 0 ? void 0 : stats.series) === null || _g === void 0 ? void 0 : _g.quarterly) === null || _h === void 0 ? void 0 : _h.quickRatio[0]) === null || _j === void 0 ? void 0 : _j.period,
-                                currentRatioQuarterly: (_m = (_l = (_k = stats === null || stats === void 0 ? void 0 : stats.series) === null || _k === void 0 ? void 0 : _k.quarterly) === null || _l === void 0 ? void 0 : _l.currentRatio[0]) === null || _m === void 0 ? void 0 : _m.v,
-                                currentRatioQuarterlyPeriod: (_q = (_p = (_o = stats === null || stats === void 0 ? void 0 : stats.series) === null || _o === void 0 ? void 0 : _o.quarterly) === null || _p === void 0 ? void 0 : _p.currentRatio[0]) === null || _q === void 0 ? void 0 : _q.period,
-                                longTermDebtToEquityQuarterly: (_t = (_s = (_r = stats === null || stats === void 0 ? void 0 : stats.series) === null || _r === void 0 ? void 0 : _r.quarterly) === null || _s === void 0 ? void 0 : _s.longtermDebtTotalEquity[0]) === null || _t === void 0 ? void 0 : _t.v,
-                                longTermDebtToEquityQuarterlyPeriod: (_w = (_v = (_u = stats === null || stats === void 0 ? void 0 : stats.series) === null || _u === void 0 ? void 0 : _u.quarterly) === null || _v === void 0 ? void 0 : _v.longtermDebtTotalEquity[0]) === null || _w === void 0 ? void 0 : _w.period,
-                                totalDebtToEquityQuarterly: (_z = (_y = (_x = stats === null || stats === void 0 ? void 0 : stats.series) === null || _x === void 0 ? void 0 : _x.quarterly) === null || _y === void 0 ? void 0 : _y.totalDebtToEquity[0]) === null || _z === void 0 ? void 0 : _z.v,
-                                totalDebtToEquityQuarterlyPeriod: (_2 = (_1 = (_0 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _0 === void 0 ? void 0 : _0.quarterly) === null || _1 === void 0 ? void 0 : _1.totalDebtToEquity[0]) === null || _2 === void 0 ? void 0 : _2.period,
-                                freeCashFlowTTM: (_3 = stats === null || stats === void 0 ? void 0 : stats.metric) === null || _3 === void 0 ? void 0 : _3.freeCashFlowTTM,
-                                freeCashFlowPerShareTTM: stats === null || stats === void 0 ? void 0 : stats.metric.freeCashFlowPerShareTTM,
-                                dividendYieldTTM: stats === null || stats === void 0 ? void 0 : stats.metric.currentDividendYieldTTM,
-                                dividendGrowthRate5Y: stats === null || stats === void 0 ? void 0 : stats.metric.dividendGrowthRate5Y,
-                                payoutRatioTTM: stats === null || stats === void 0 ? void 0 : stats.metric.payoutRatioTTM,
-                                roicTTM: (_6 = (_5 = (_4 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _4 === void 0 ? void 0 : _4.quarterly) === null || _5 === void 0 ? void 0 : _5.roicTTM[0]) === null || _6 === void 0 ? void 0 : _6.v,
-                                roicTTMPeriod: (_9 = (_8 = (_7 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _7 === void 0 ? void 0 : _7.quarterly) === null || _8 === void 0 ? void 0 : _8.roicTTM[0]) === null || _9 === void 0 ? void 0 : _9.period,
-                                roeTTM: (_11 = (_10 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _10 === void 0 ? void 0 : _10.quarterly) === null || _11 === void 0 ? void 0 : _11.roeTTM[0].v,
-                                roeTTMPeriod: (_13 = (_12 = stats === null || stats === void 0 ? void 0 : stats.series) === null || _12 === void 0 ? void 0 : _12.quarterly) === null || _13 === void 0 ? void 0 : _13.roeTTM[0].period
-                            }
-                        };
-                        if (news) {
-                            company.companyNews = [];
-                            console.log("orig news count ".concat(news.length));
-                            if (news.length > 0)
-                                news = news.slice(0, this._newsArticleLimit); //limit numbers of articles returned
-                            for (_i = 0, news_1 = news; _i < news_1.length; _i++) {
-                                article = news_1[_i];
-                                company.companyNews.push({
-                                    datetime: new Date((article === null || article === void 0 ? void 0 : article.datetime) * 1000).toDateString(),
-                                    headline: article === null || article === void 0 ? void 0 : article.headline,
-                                    id: article === null || article === void 0 ? void 0 : article.id,
-                                    image: article === null || article === void 0 ? void 0 : article.image,
-                                    related: article === null || article === void 0 ? void 0 : article.related,
-                                    summary: article === null || article === void 0 ? void 0 : article.summary,
-                                    url: article === null || article === void 0 ? void 0 : article.url,
-                                    source: article === null || article === void 0 ? void 0 : article.source
-                                });
-                            }
-                        }
+                        // company = {
+                        //     name: profile?.name,
+                        //     ticker: profile?.ticker,
+                        //     country: profile?.country,
+                        //     currency: profile?.currency,
+                        //     exchange: profile?.exchange,
+                        //     industry: profile?.finnhubIndustry,
+                        //     logo: profile?.logo,
+                        //     marketCapitalization: profile?.marketCapitalization,
+                        //     sharesOutstanding: profile?.shareOutstanding,
+                        //     website: profile?.weburl,
+                        //     stockPrice: quote?.c,
+                        //     stockPriceAsOfDateTime: moment().format('MM/DD/YYYY h:mm a'),
+                        //     companyStats : {
+                        //         revenueGrowthOneYearTTM: stats?.metric?.revenueGrowthTTMYoy,
+                        //         revenueGrowthThreeYear: stats?.metric?.revenueGrowth3Y,
+                        //         revenueGrowthFiveYear: stats?.metric?.revenueGrowth5Y,
+                        //         quickRatioQuarterly: {
+                        //             value: stats?.series?.quarterly?.quickRatio[0]?.v,
+                        //             period: stats?.series?.quarterly?.quickRatio[0]?.period                    
+                        //         },
+                        //         currentRatioQuarterly: {
+                        //             value: stats?.series?.quarterly?.currentRatio[0]?.v,
+                        //             period: stats?.series?.quarterly?.currentRatio[0]?.period
+                        //         },
+                        //         longTermDebtToEquityQuarterly: {
+                        //             value: stats?.series?.quarterly?.longtermDebtTotalEquity[0]?.v,
+                        //             period: stats?.series?.quarterly?.longtermDebtTotalEquity[0]?.period 
+                        //         },
+                        //         totalDebtToEquityQuarterly: {
+                        //             value: stats?.series?.quarterly?.totalDebtToEquity[0]?.v,
+                        //             period: stats?.series?.quarterly?.totalDebtToEquity[0]?.period
+                        //         },
+                        //         freeCashFlowTTM: stats?.metric?.freeCashFlowTTM,
+                        //         freeCashFlowPerShareTTM: stats?.metric.freeCashFlowPerShareTTM,
+                        //         dividendYieldTTM: stats?.metric.currentDividendYieldTTM,
+                        //         dividendGrowthRate5Y: stats?.metric.dividendGrowthRate5Y,
+                        //         payoutRatioTTM: stats?.metric.payoutRatioTTM,
+                        //         roicTTM: {
+                        //             value: stats?.series?.quarterly?.roicTTM[0]?.v,
+                        //             period: stats?.series?.quarterly?.roicTTM[0]?.period
+                        //         },
+                        //         roeTTM: {
+                        //             value: stats?.series?.quarterly?.roeTTM[0].v,
+                        //             period: stats?.series?.quarterly?.roeTTM[0].period
+                        //         } 
+                        //     }
+                        // }
+                        // if (news){
+                        //     company.companyNews = [];
+                        //     console.log(`orig news count ${news.length}`);
+                        //     if (news.length > 0)
+                        //         news = news.slice(0,this._newsArticleLimit); //limit numbers of articles returned
+                        //     for (let article of news){
+                        //         company.companyNews.push({                        
+                        //             datetime: new Date(article?.datetime * 1000).toDateString(),
+                        //             headline: article?.headline,
+                        //             id: article?.id,
+                        //             image: article?.image,
+                        //             related: article?.related,
+                        //             summary: article?.summary,
+                        //             url: article?.url,
+                        //             source: article?.source
+                        //         });
+                        //     }
+                        // }
                         return [2 /*return*/, company];
                     case 5:
-                        error_1 = _18.sent();
+                        error_1 = _e.sent();
                         console.log(error_1);
                         throw new Error(error_1);
                     case 6: return [2 /*return*/];

@@ -10,7 +10,9 @@ provider:
   profile: eddie-personal
   deploymentMethod: direct
   httpApi:
-    cors: true	
+    cors: true
+  logs:
+    httpApi: true	
   environment:
     FINNHUB_API_KEY: ${env:FINNHUB_API_KEY}
 

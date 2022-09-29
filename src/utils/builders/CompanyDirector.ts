@@ -1,5 +1,6 @@
 import Company from "../../models/Company";
 import * as moment from 'moment';
+import FinancialUnit from "../../models/FinancialUnit";
 
 export default class CompanyDirector {
 
@@ -8,7 +9,7 @@ export default class CompanyDirector {
     private static _timeSeriesLimit: number = 6;
 
 
-    static build (profile: any, quote: any, stats: any, news: any): Company {
+    static build (profile: any, quote: any, stats: any, news: any, financials: any): Company {
 
         let company: Company = {
             name: profile?.name,
@@ -23,6 +24,7 @@ export default class CompanyDirector {
             website: profile?.weburl,
             stockPrice: quote?.c,
             stockPriceAsOfDateTime: moment().format('MM/DD/YYYY h:mm a'),
+            
             companyStats : {
                 revenueGrowthOneYearTTM: stats?.metric?.revenueGrowthTTMYoy,
                 revenueGrowthThreeYear: stats?.metric?.revenueGrowth3Y,
@@ -110,6 +112,58 @@ export default class CompanyDirector {
                     url: article?.url,
                     source: article?.source
                 });
+            }
+        }
+
+
+        //Build financials
+        if (financials){
+            company.financials = []
+
+            for (const financial of financials?.data){
+
+                const balanceSheets: FinancialUnit[] = []
+                for (const unit of financial?.report?.bs){
+                    balanceSheets.push({
+                        concept: unit?.concept,
+                        unit: unit?.unit,
+                        label: unit?.label,
+                        value: unit?.value
+                    })
+                }
+
+                const incomeStatements: FinancialUnit[] = []
+                for (const unit of financial?.report?.ic){
+                    incomeStatements.push({
+                        concept: unit?.concept,
+                        unit: unit?.unit,
+                        label: unit?.label,
+                        value: unit?.value
+                    })
+                }
+                
+                const cashFlowStatements: FinancialUnit[] = []
+                for (const unit of financial?.report?.cf){
+                    cashFlowStatements.push({
+                        concept: unit?.concept,
+                        unit: unit?.unit,
+                        label: unit?.label,
+                        value: unit?.value
+                    })
+                }
+
+                company.financials.push({
+                    year: financial?.year,
+                    quarter: financial?.quarter,
+                    form: financial?.form,
+                    startDate: financial?.startDate,
+                    endDate: financial?.endDate,
+                    filedDate: financial?.filedDate,
+                    acceptedDate: financial?.acceptedDate,
+                    balanceSheets: balanceSheets,
+                    incomeStatements: incomeStatements,
+                    cashFlowStatements: cashFlowStatements
+                })
             }
         }
 

@@ -1,5 +1,6 @@
 import CompanyNews from "./CompanyNews";
 import CompanyStats from "./CompanyStats";
+import Financials from "./Financials";
 import TimeSeries from "./TimeSeries";
 
 export default interface Company {
@@ -15,6 +16,7 @@ export default interface Company {
     website?: string;
     stockPrice?: string;
     stockPriceAsOfDateTime?: string;
+    financials?: Financials[];
     companyStats?: CompanyStats;
     timeSeries?: TimeSeries;
     companyNews?: CompanyNews[];

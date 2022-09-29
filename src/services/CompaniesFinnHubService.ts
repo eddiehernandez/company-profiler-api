@@ -17,7 +17,8 @@ export default class CompaniesFinnHubService implements ICompaniesService {
     private _companyNewsUrl: string
     private _companyStatsUrl: string
     private _companyQuoteUrl: string
-    private _newsArticleLimit: number
+    private _companyFinancialsUrl: string
+
 
     constructor (){
         if (!process.env.FINNHUB_API_KEY) throw 'Finnhub API Key env variable not specified!'
@@ -27,7 +28,7 @@ export default class CompaniesFinnHubService implements ICompaniesService {
         this._companyNewsUrl = this._baseUrl + '/company-news'
         this._companyStatsUrl = this._baseUrl + '/stock/metric'
         this._companyQuoteUrl = this._baseUrl + '/quote'
-        this._newsArticleLimit = 10
+        this._companyFinancialsUrl = this._baseUrl + '/stock/financials-reported'
     }
 
     async getCompanies(): Promise<CompanySearchResult[] | undefined> {
@@ -89,87 +90,20 @@ export default class CompaniesFinnHubService implements ICompaniesService {
             url = this._companyQuoteUrl + `?symbol=${ticker}&token=${this._apiKey}`
             const { data: quote, status: quoteStatus } = await axios.get<any>(url)
             if (quoteStatus != 200) throw quote
-            console.log(quote);
-  
 
-            company = CompanyDirector.build(profile, quote, stats, news)
-
-
-            //TODO: create company director and builder
-            // company = {
-            //     name: profile?.name,
-            //     ticker: profile?.ticker,
-            //     country: profile?.country,
-            //     currency: profile?.currency,
-            //     exchange: profile?.exchange,
-            //     industry: profile?.finnhubIndustry,
-            //     logo: profile?.logo,
-            //     marketCapitalization: profile?.marketCapitalization,
-            //     sharesOutstanding: profile?.shareOutstanding,
-            //     website: profile?.weburl,
-            //     stockPrice: quote?.c,
-            //     stockPriceAsOfDateTime: moment().format('MM/DD/YYYY h:mm a'),
-            //     companyStats : {
-            //         revenueGrowthOneYearTTM: stats?.metric?.revenueGrowthTTMYoy,
-            //         revenueGrowthThreeYear: stats?.metric?.revenueGrowth3Y,
-            //         revenueGrowthFiveYear: stats?.metric?.revenueGrowth5Y,
-            //         quickRatioQuarterly: {
-            //             value: stats?.series?.quarterly?.quickRatio[0]?.v,
-            //             period: stats?.series?.quarterly?.quickRatio[0]?.period                    
-            //         },
-            //         currentRatioQuarterly: {
-            //             value: stats?.series?.quarterly?.currentRatio[0]?.v,
-            //             period: stats?.series?.quarterly?.currentRatio[0]?.period
-            //         },
-            //         longTermDebtToEquityQuarterly: {
-            //             value: stats?.series?.quarterly?.longtermDebtTotalEquity[0]?.v,
-            //             period: stats?.series?.quarterly?.longtermDebtTotalEquity[0]?.period 
-            //         },
-            //         totalDebtToEquityQuarterly: {
-            //             value: stats?.series?.quarterly?.totalDebtToEquity[0]?.v,
-            //             period: stats?.series?.quarterly?.totalDebtToEquity[0]?.period
-            //         },
-            //         freeCashFlowTTM: stats?.metric?.freeCashFlowTTM,
-            //         freeCashFlowPerShareTTM: stats?.metric.freeCashFlowPerShareTTM,
-            //         dividendYieldTTM: stats?.metric.currentDividendYieldTTM,
-            //         dividendGrowthRate5Y: stats?.metric.dividendGrowthRate5Y,
-            //         payoutRatioTTM: stats?.metric.payoutRatioTTM,
-            //         roicTTM: {
-            //             value: stats?.series?.quarterly?.roicTTM[0]?.v,
-            //             period: stats?.series?.quarterly?.roicTTM[0]?.period
-            //         },
-            //         roeTTM: {
-            //             value: stats?.series?.quarterly?.roeTTM[0].v,
-            //             period: stats?.series?.quarterly?.roeTTM[0].period
-            //         } 
-            //     }
-            // }
-
-            // if (news){
-            //     company.companyNews = [];
-            //     console.log(`orig news count ${news.length}`);
-            //     if (news.length > 0)
-            //         news = news.slice(0,this._newsArticleLimit); //limit numbers of articles returned
-
-            //     for (let article of news){
-            //         company.companyNews.push({                        
-            //             datetime: new Date(article?.datetime * 1000).toDateString(),
-            //             headline: article?.headline,
-            //             id: article?.id,
-            //             image: article?.image,
-            //             related: article?.related,
-            //             summary: article?.summary,
-            //             url: article?.url,
-            //             source: article?.source
-            //         });
-            //     }
-            // }
+            //Get Company Financials
+            url = this._companyFinancialsUrl + `?symbol=${ticker}&freq=annual&token=${this._apiKey}`
+            console.log(`financials url = ${url}`)
+            const { data: financials, status: financialsStatus } = await axios.get<any>(url)
+            if (financialsStatus != 200) throw financialsStatus
+            
+            company = CompanyDirector.build(profile, quote, stats, news, financials)
   
             return company;
     
         }
         catch (error){
-            console.log(error);
+            // console.log(error);
             throw new Error(error);
         }
 

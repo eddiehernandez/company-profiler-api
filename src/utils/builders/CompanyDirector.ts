@@ -119,12 +119,16 @@ export default class CompanyDirector {
         //Build financials
         if (financials){
             company.financials = []
+            const cik = financials?.cik
+            if (!cik) throw new Error('unable to find cik in financials')
 
-            for (const financial of financials?.data){
+            const financialsFiltered = financials?.data.filter(x => x.cik === cik)
 
-                const balanceSheets: FinancialUnit[] = []
+            for (const financial of financialsFiltered){
+
+                const balanceSheet: FinancialUnit[] = []
                 for (const unit of financial?.report?.bs){
-                    balanceSheets.push({
+                    balanceSheet.push({
                         concept: unit?.concept,
                         unit: unit?.unit,
                         label: unit?.label,
@@ -132,9 +136,9 @@ export default class CompanyDirector {
                     })
                 }
 
-                const incomeStatements: FinancialUnit[] = []
+                const incomeStatement: FinancialUnit[] = []
                 for (const unit of financial?.report?.ic){
-                    incomeStatements.push({
+                    incomeStatement.push({
                         concept: unit?.concept,
                         unit: unit?.unit,
                         label: unit?.label,
@@ -142,9 +146,9 @@ export default class CompanyDirector {
                     })
                 }
                 
-                const cashFlowStatements: FinancialUnit[] = []
+                const cashFlowStatement: FinancialUnit[] = []
                 for (const unit of financial?.report?.cf){
-                    cashFlowStatements.push({
+                    cashFlowStatement.push({
                         concept: unit?.concept,
                         unit: unit?.unit,
                         label: unit?.label,
@@ -160,9 +164,10 @@ export default class CompanyDirector {
                     endDate: financial?.endDate,
                     filedDate: financial?.filedDate,
                     acceptedDate: financial?.acceptedDate,
-                    balanceSheets: balanceSheets,
-                    incomeStatements: incomeStatements,
-                    cashFlowStatements: cashFlowStatements
+                    cik: financial?.cik,
+                    balanceSheet: balanceSheet,
+                    incomeStatement: incomeStatement,
+                    cashFlowStatement: cashFlowStatement
                 })
             }
         }

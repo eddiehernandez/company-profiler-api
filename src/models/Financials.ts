@@ -8,7 +8,8 @@ export default interface Financials {
     endDate: string;
     filedDate: string;
     acceptedDate: string;
-    balanceSheets: FinancialUnit[];
-    incomeStatements: FinancialUnit[];
-    cashFlowStatements: FinancialUnit[];
+    cik: string;
+    balanceSheet: FinancialUnit[];
+    incomeStatement: FinancialUnit[];
+    cashFlowStatement: FinancialUnit[];
 }

@@ -128,32 +128,41 @@ export default class CompanyDirector {
 
                 const balanceSheet: FinancialUnit[] = []
                 for (const unit of financial?.report?.bs){
-                    balanceSheet.push({
-                        concept: unit?.concept,
-                        unit: unit?.unit,
-                        label: unit?.label,
-                        value: unit?.value
-                    })
+
+                    if (balanceSheet.find(x => x.concept == unit.concept) == undefined){
+                        balanceSheet.push({
+                            concept: unit?.concept,
+                            unit: unit?.unit,
+                            label: unit?.label,
+                            value: unit?.value
+                        })  
+                    }
+
+
                 }
 
                 const incomeStatement: FinancialUnit[] = []
                 for (const unit of financial?.report?.ic){
-                    incomeStatement.push({
-                        concept: unit?.concept,
-                        unit: unit?.unit,
-                        label: unit?.label,
-                        value: unit?.value
-                    })
+                    if (incomeStatement.find(x => x.concept == unit.concept) == undefined){
+                        incomeStatement.push({
+                            concept: unit?.concept,
+                            unit: unit?.unit,
+                            label: unit?.label,
+                            value: unit?.value
+                        })
+                    }
                 }
                 
                 const cashFlowStatement: FinancialUnit[] = []
                 for (const unit of financial?.report?.cf){
-                    cashFlowStatement.push({
-                        concept: unit?.concept,
-                        unit: unit?.unit,
-                        label: unit?.label,
-                        value: unit?.value
-                    })
+                    if (cashFlowStatement.find(x => x.concept == unit.concept) == undefined){
+                        cashFlowStatement.push({
+                            concept: unit?.concept,
+                            unit: unit?.unit,
+                            label: unit?.label,
+                            value: unit?.value
+                        })
+                    }
                 }
 
                 company.financials.push({

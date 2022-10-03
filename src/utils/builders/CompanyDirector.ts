@@ -122,10 +122,9 @@ export default class CompanyDirector {
             const cik = financials?.cik
             if (!cik) throw new Error('unable to find cik in financials')
 
-            const financialsFiltered = financials?.data.filter(x => x.cik === cik)
+            const financialsFiltered = financials?.data.filter(x => x.cik === cik).slice(0, 5)
 
             for (const financial of financialsFiltered){
-
                 const balanceSheet: FinancialUnit[] = []
                 for (const unit of financial?.report?.bs){
 

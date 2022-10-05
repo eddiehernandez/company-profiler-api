@@ -6,15 +6,30 @@ provider:
   name: aws
   runtime: nodejs14.x
   stage: dev
-  region: us-east-2
+  region: ${env:AWS_REGION}
   profile: eddie-personal
   deploymentMethod: direct
   httpApi:
     cors: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
   logs:
     httpApi: true	
   environment:
     FINNHUB_API_KEY: ${env:FINNHUB_API_KEY}
+    NODE_ENV: ${env:NODE_ENV}
+    DEV_USER: ${env:DEV_USER}
+    DYNAMODB_TABLE: ${env:DYNAMODB_TABLE}
 
 functions:
   getCompany:
@@ -22,13 +37,50 @@ functions:
     events:
       - httpApi:
           path: /companies/{ticker}
-          method: get
+          method: GET
   getCompanies:
     handler: src/handlers/getCompanies.main
     events:
       - httpApi:
           path: /companies
-          method: get
+          method: GET
+  getFavorites:
+    handler: src/handlers/favorites/getFavorites.main
+    events:
+      - httpApi:
+          path: /favorites
+          method: GET     
+  addFavorite:
+    handler: src/handlers/favorites/addFavorite.main
+    events:
+      - httpApi:
+          path: /favorites
+          method: POST
+  deleteFavorite:
+    handler: src/handlers/favorites/deleteFavorite.main
+    events:
+      - httpApi:
+          path: /favorites/{ticker}
+          method: DELETE     
+
+resources:
+  Resources:
+    CompanyProfilerFavoritesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+          - AttributeName: ticker
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+          - AttributeName: ticker
+            AttributeType: S
+
 plugins:
   - serverless-plugin-typescript
   - serverless-offline

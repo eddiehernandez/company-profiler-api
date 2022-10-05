@@ -6,7 +6,7 @@
     "local-getCompany": "serverless invoke local -f getCompany",
     "remote-getCompany": "serverless invoke -f getCompany",
     "local-api": "serverless offline start --printOutput",
-    "deploy": "serverless deploy --verbose",
+    "deploy": "NODE_ENV=production serverless deploy --verbose",
     "remove": "serverless remove",
     "test": "jest"
   },
@@ -21,6 +21,9 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.183.0",
+    "@aws-sdk/lib-dynamodb": "^3.183.0",
+    "@aws-sdk/types": "^3.183.0",
     "axios": "^0.27.2",
     "moment": "^2.29.4"
   }

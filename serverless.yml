@@ -8,6 +8,7 @@ provider:
   stage: dev
   region: ${env:AWS_REGION}
   profile: eddie-personal
+  memorySize: 128
   deploymentMethod: direct
   httpApi:
     cors: true

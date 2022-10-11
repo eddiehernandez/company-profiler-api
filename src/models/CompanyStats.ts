@@ -9,11 +9,11 @@ export default interface CompanyStats {
     currentRatioQuarterly?: CompanyMetric;
     longTermDebtToEquityQuarterly?: CompanyMetric;
     totalDebtToEquityQuarterly?: CompanyMetric;
-    freeCashFlowTTM?: string;
-    freeCashFlowPerShareTTM?: string;
+    cashFlowPerShareTTM?: string;
     dividendYieldTTM?: string;
     dividendGrowthRate5Y?: string;
     payoutRatioTTM?: string;
+    pfcfShareTTM?: string;
     roicTTM?: CompanyMetric;
     roeTTM?: CompanyMetric;
 }

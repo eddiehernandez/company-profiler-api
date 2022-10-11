@@ -45,11 +45,11 @@ export default class CompanyDirector {
                     value: stats?.series?.quarterly?.totalDebtToEquity[0]?.v,
                     period: stats?.series?.quarterly?.totalDebtToEquity[0]?.period
                 },
-                freeCashFlowTTM: stats?.metric?.freeCashFlowTTM,
-                freeCashFlowPerShareTTM: stats?.metric.freeCashFlowPerShareTTM,
+                cashFlowPerShareTTM: stats?.metric.cashFlowPerShareTTM,
                 dividendYieldTTM: stats?.metric.currentDividendYieldTTM,
                 dividendGrowthRate5Y: stats?.metric.dividendGrowthRate5Y,
                 payoutRatioTTM: stats?.metric.payoutRatioTTM,
+                pfcfShareTTM: stats?.metric.pfcfShareTTM,
                 roicTTM: {
                     value: stats?.series?.quarterly?.roicTTM[0]?.v,
                     period: stats?.series?.quarterly?.roicTTM[0]?.period
@@ -57,7 +57,8 @@ export default class CompanyDirector {
                 roeTTM: {
                     value: stats?.series?.quarterly?.roeTTM[0].v,
                     period: stats?.series?.quarterly?.roeTTM[0].period
-                } 
+                }
+
             }
         }
 

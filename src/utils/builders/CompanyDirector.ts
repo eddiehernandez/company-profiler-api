@@ -65,7 +65,8 @@ export default class CompanyDirector {
         //Build time series
         company.timeSeries = {
             currentRatio: [],
-            totalDebtToEquity: []
+            totalDebtToEquity: [],
+            priceFreeCashFlow: []
         }
 
         //time series - current ratio
@@ -94,6 +95,15 @@ export default class CompanyDirector {
                 period: totalDebtToEquity?.period
             }); 
         }
+
+        //time series - price to free cash flow
+        for (let x of stats?.series?.annual?.pfcf){
+            if (company?.timeSeries?.priceFreeCashFlow?.length === this._timeSeriesLimit) break; 
+            company?.timeSeries?.priceFreeCashFlow?.push({
+                value: x?.v,
+                period: x?.period
+            }); 
+        }        
 
         //Build company news
         if (news){
